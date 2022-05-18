@@ -13,7 +13,7 @@
 #include <unistd.h> // close
 
 int main() {
-// 1.创建套接字
+  // 1.创建套接字
   int fd = socket(AF_INET, SOCK_STREAM, 0); // TCP
 
   // 2. 连接服务器
