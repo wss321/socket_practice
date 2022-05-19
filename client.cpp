@@ -12,6 +12,7 @@
 #include <cstring>
 #include <unistd.h> // close
 
+using namespace std;
 int main() {
   // 1.创建套接字
   int fd = socket(AF_INET, SOCK_STREAM, 0); // TCP
@@ -23,7 +24,7 @@ int main() {
   sv_addr.sin_port = htons(10000);
   int ret = connect(fd, (struct sockaddr *) &sv_addr, sizeof(sv_addr));
   if (ret == -1) {
-    std::cerr << "connect failed";
+    std::cerr << "connect failed"<<endl;
     exit(0);
   }
   int number = 0;
@@ -39,10 +40,10 @@ int main() {
     if (len > 0) {
       std::cout << "sever say:" << buff << std::endl;
     } else if (len == 0) {
-      std::cerr << "server disconnected";
+      std::cerr << "server disconnected"<<endl;
       break;
     } else {
-      std::cerr << "read failed";
+      std::cerr << "read failed"<<endl;
       break;
     }
     sleep(1);

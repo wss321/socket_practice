@@ -8,3 +8,5 @@ add_executable(client client.cpp)
 
 add_executable(multi_thread_server multi_thread_server.cpp)
 target_link_libraries(multi_thread_server -lpthread)
+
+add_executable(multi_process_server multi_process_server.cpp)

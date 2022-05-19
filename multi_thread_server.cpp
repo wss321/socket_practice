@@ -32,7 +32,7 @@ int main() {
   // 1.创建监听套接字
   int lfd = socket(AF_INET, SOCK_STREAM, 0); // TCP
   if (lfd == -1) {
-    std::cerr << "create socket failed";
+    std::cerr << "create socket failed"<<endl;
     exit(0);
   }
   // 2. 绑定本地端口和IP
@@ -42,13 +42,13 @@ int main() {
   addr.sin_port = htons(10000);
   int ret = bind(lfd, (struct sockaddr *) &addr, sizeof(addr));
   if (ret == -1) {
-    std::cerr << "bind failed";
+    std::cerr << "bind failed"<<endl;
     exit(0);
   }
   // 3. 设置监听
   ret = listen(lfd, 128);
   if (ret == -1) {
-    std::cerr << "listen failed";
+    std::cerr << "listen failed"<<endl;
     exit(0);
   }
   for (int i = 0; i < MAX_CLIENT_NUM; ++i) { // 初始化子线程参数
@@ -71,7 +71,7 @@ int main() {
     int cfd = accept(lfd, (struct sockaddr *) &pinfo->addr, &c_addr_len);
     pinfo->fd = cfd;
     if (cfd == -1) {
-      std::cerr << "accept failed";
+      std::cerr << "accept failed"<<endl;
       break;
     }
     // 创建子线程
@@ -105,12 +105,10 @@ void *working(void *params) {
       std::cout << client << " say:" << buff << std::endl;
       send(cfd, buff, len, 0); // 原路发送
     } else if (len == 0) {
-      std::cerr << client << " disconnected";
-      pinfo->fd = -1;
+      std::cerr << client << " disconnected"<<endl;
       break;
     } else {
-      std::cerr << client << " read failed";
-      pinfo->fd = -1;
+      std::cerr << client << " read failed"<<endl;
       break;
     }
   }

@@ -12,11 +12,12 @@
 #include <cstring>
 #include <unistd.h> // close
 
+using namespace std;
 int main() {
   // 1.创建监听套接字
   int lfd = socket(AF_INET, SOCK_STREAM, 0); // TCP
   if (lfd == -1) {
-    std::cerr << "create socket failed";
+    std::cerr << "create socket failed"<<endl;
     exit(0);
   }
 
@@ -27,13 +28,13 @@ int main() {
   addr.sin_port = htons(10000);
   int ret = bind(lfd, (struct sockaddr *) &addr, sizeof(addr));
   if (ret == -1) {
-    std::cerr << "bind failed";
+    std::cerr << "bind failed"<<endl;
     exit(0);
   }
   // 3. 设置监听
   ret = listen(lfd, 128);
   if (ret == -1) {
-    std::cerr << "listen failed";
+    std::cerr << "listen failed"<<endl;
     exit(0);
   }
 
@@ -42,7 +43,7 @@ int main() {
   socklen_t c_addr_len = sizeof(c_addr);
   int cfd = accept(lfd, (struct sockaddr *) &c_addr, &c_addr_len);
   if (cfd == -1) {
-    std::cerr << "accept failed";
+    std::cerr << "accept failed"<<endl;
     exit(0);
   }
   // 打印客户端IP和端口
@@ -50,7 +51,7 @@ int main() {
   std::cout << "client "
             << inet_ntop(AF_INET, &c_addr.sin_addr.s_addr, c_ip, sizeof(c_ip))
             << ":"
-            << ntohs(c_addr.sin_port) << " connected"
+            << ntohs(c_addr.sin_port) << " connected"<<endl
             << std::endl;
   // 5.与客户端通信
   while (1) {
@@ -62,10 +63,10 @@ int main() {
       std::cout << "client say:" << buff << std::endl;
       send(cfd, buff, len, 0); // 原路发送
     } else if (len == 0) {
-      std::cerr << "client disconnected";
+      std::cerr << "client disconnected"<<endl;
       break;
     } else {
-      std::cerr << "read failed";
+      std::cerr << "read failed"<<endl;
       break;
     }
   }
