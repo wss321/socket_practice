@@ -32,6 +32,15 @@
 
 using namespace std;
 
+string getIpString(const struct sockaddr_in *addr) {
+  char c_ip[32];
+  stringstream ipnport;
+  ipnport << inet_ntop(AF_INET, &addr->sin_addr.s_addr, c_ip, sizeof(c_ip))
+          << ":"
+          << ntohs(addr->sin_port);
+  return ipnport.str();
+}
+
 int working(int cfd, string &client);
 // 信号处理函数
 void callback(int num) {
@@ -92,12 +101,8 @@ int main() {
       std::cerr << "accept failed" << endl;
       exit(0);
     }
-    char c_ip[32];
-    stringstream ipnport;
-    ipnport << inet_ntop(AF_INET, &cliaddr.sin_addr.s_addr, c_ip, sizeof(c_ip))
-            << ":"
-            << ntohs(cliaddr.sin_port);
-    string client = ipnport.str();
+
+    string client = getIpString(&cliaddr);
     std::cout << client << " connected." << endl;
     if ((child_pid = fork()) == 0) {   /*子进程*/
       close(lfd);    // 子进程不负责监听

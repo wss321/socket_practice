@@ -32,7 +32,7 @@ int main() {
   // 1.创建监听套接字
   int lfd = socket(AF_INET, SOCK_STREAM, 0); // TCP
   if (lfd == -1) {
-    std::cerr << "create socket failed"<<endl;
+    std::cerr << "create socket failed" << endl;
     exit(0);
   }
   // 2. 绑定本地端口和IP
@@ -42,13 +42,13 @@ int main() {
   addr.sin_port = htons(10000);
   int ret = bind(lfd, (struct sockaddr *) &addr, sizeof(addr));
   if (ret == -1) {
-    std::cerr << "bind failed"<<endl;
+    std::cerr << "bind failed" << endl;
     exit(0);
   }
   // 3. 设置监听
   ret = listen(lfd, 128);
   if (ret == -1) {
-    std::cerr << "listen failed"<<endl;
+    std::cerr << "listen failed" << endl;
     exit(0);
   }
   for (int i = 0; i < MAX_CLIENT_NUM; ++i) { // 初始化子线程参数
@@ -71,7 +71,7 @@ int main() {
     int cfd = accept(lfd, (struct sockaddr *) &pinfo->addr, &c_addr_len);
     pinfo->fd = cfd;
     if (cfd == -1) {
-      std::cerr << "accept failed"<<endl;
+      std::cerr << "accept failed" << endl;
       break;
     }
     // 创建子线程
@@ -83,18 +83,21 @@ int main() {
   return 0;
 }
 
+string getIpString(const struct sockaddr_in *addr) {
+  char c_ip[32];
+  stringstream ipnport;
+  ipnport << inet_ntop(AF_INET, &addr->sin_addr.s_addr, c_ip, sizeof(c_ip))
+          << ":"
+          << ntohs(addr->sin_port);
+  return ipnport.str();
+}
 
 void *working(void *params) {
   struct SockInfo *pinfo = (struct SockInfo *) params;
   // 5.与客户端通信
   // 打印客户端IP和端口
-  char c_ip[32];
   int cfd = pinfo->fd;
-  stringstream ipnport;
-  ipnport << inet_ntop(AF_INET, &pinfo->addr.sin_addr.s_addr, c_ip, sizeof(c_ip))
-          << ":"
-          << ntohs(pinfo->addr.sin_port);
-  string client = ipnport.str();
+  string client = getIpString(&pinfo->addr);
   std::cout << client << " connected." << endl;
   while (1) {
     // 接收数据
@@ -105,10 +108,10 @@ void *working(void *params) {
       std::cout << client << " say:" << buff << std::endl;
       send(cfd, buff, len, 0); // 原路发送
     } else if (len == 0) {
-      std::cerr << client << " disconnected"<<endl;
+      std::cerr << client << " disconnected" << endl;
       break;
     } else {
-      std::cerr << client << " read failed"<<endl;
+      std::cerr << client << " read failed" << endl;
       break;
     }
   }
